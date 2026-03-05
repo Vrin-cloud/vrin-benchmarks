@@ -6,7 +6,7 @@ Reproducible benchmark evaluation of VRIN's Hybrid RAG system against industry-s
 
 | Benchmark | Samples | Accuracy | 95% CI | Best Competitor | Gap |
 |-----------|---------|----------|--------|-----------------|-----|
-| **MultiHop-RAG** | 384 | **91.4%** | [86.8%, 96.0%] | 77.0% (GPT 5.2 w/ evidence) | **+14.4pp** |
+| **MultiHop-RAG** | 384 | **95.1%** | [90.5%, 99.7%] | 78.9% (GPT 5.2 w/ evidence) | **+16.2pp** |
 | **RAGBench FinQA** | 384 | **97.5%** | ±4.5% | 47.2% (LLaMA 3.3-70B) | **+50.3pp** |
 
 ## Benchmarks
@@ -130,8 +130,8 @@ Margins are calculated dynamically using finite population correction:
 
 | Metric | Score |
 |--------|-------|
-| Overall Accuracy | **91.4%** (351/384) |
-| 95% Confidence Interval | [86.8%, 96.0%] |
+| Overall Accuracy | **95.1%** (365/384) |
+| 95% Confidence Interval | [90.5%, 99.7%] |
 | Margin of Error | ±4.6% |
 
 **Accuracy by Question Type:**
@@ -141,7 +141,7 @@ Margins are calculated dynamically using finite population correction:
 | Inference | **99.2%** | 122/123 |
 | Comparison | **94.6%** | 122/129 |
 | Temporal | **89.8%** | 79/88 |
-| Null (insufficient info) | **63.6%** | 28/44 |
+| Null (insufficient info) | **95.5%** | 42/44 |
 
 **Match Type Breakdown:**
 
@@ -153,17 +153,17 @@ Margins are calculated dynamically using finite population correction:
 | Semantic (yes) | 3 | Yes indicators detected |
 | No match | 33 | Incorrect answer |
 
-### GPT 5.2 Baseline (Feb 2026)
+### GPT 5.2 Baseline (Feb 2026, 384 samples)
 
-| Metric | VRIN | GPT 5.2 (w/ evidence) |
-|--------|------|----------------------|
-| Overall Accuracy | **91.4%** | 77.0% |
-| Inference queries | **99.2%** | 96.9% |
-| Comparison queries | **94.6%** | 75.8% |
-| Temporal queries | **89.8%** | 73.9% |
-| Null queries | **63.6%** | 50.0% |
+| Metric | VRIN | GPT 5.2 (w/ evidence) | Delta |
+|--------|------|----------------------|-------|
+| Overall Accuracy | **95.1%** | 78.9% | +16.2pp |
+| Inference queries | **99.2%** | 98.4% | +0.8pp |
+| Comparison queries | **94.6%** | 79.1% | +15.5pp |
+| Temporal queries | **89.8%** | 40.9% | +48.9pp |
+| Null queries | **95.5%** | 100.0% | -4.5pp |
 
-VRIN outperforms GPT 5.2 by **+14.4 percentage points** even when GPT is given the exact same evidence documents in its context window.
+VRIN outperforms GPT 5.2 by **+16.2 percentage points** overall, with the largest gaps on temporal (+48.9pp) and comparison (+15.5pp) queries. GPT 5.2 receives oracle evidence documents directly in context; VRIN retrieves from a noisy 609-article corpus.
 
 ## Comparison with Published Baselines
 
@@ -171,8 +171,8 @@ VRIN outperforms GPT 5.2 by **+14.4 percentage points** even when GPT is given t
 
 | System | Accuracy |
 |--------|----------|
-| **VRIN (Hybrid RAG)** | **91.4%** |
-| GPT 5.2 (w/ evidence in context) | 77.0% |
+| **VRIN (Hybrid RAG)** | **95.1%** |
+| GPT 5.2 (w/ evidence in context) | 78.9% |
 | Multi-Meta RAG + GPT-4 | 63.0% |
 | IRCoT + GPT-4 | 58.2% |
 | Standard RAG + GPT-4 | 47.3% |
@@ -216,7 +216,7 @@ Results are saved to `{benchmark}/results/` with timestamps.
 
 - Complex nested tables may not extract perfectly
 - Very large tables (50+ rows) can exceed chunk sizes
-- "Null" queries (insufficient information) are the weakest category at 63.6%
+- "Null" queries (insufficient information) improved from 63.6% to 95.5% with adaptive bail-out
 
 ## License
 

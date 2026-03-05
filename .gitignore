@@ -5,6 +5,8 @@ __pycache__/
 *.pyc
 *.pyo
 .env
+.venv/
+*.egg-info/
 
 # Large data files (download via scripts)
 multihop_rag/data/corpus_train.json
@@ -20,4 +22,5 @@ ragbench_finqa/results/*
 ragbench_finqa/logs/*
 gpt_baseline/results/*
 gpt_baseline/logs/*
+musique/results/*
 !**/.gitkeep

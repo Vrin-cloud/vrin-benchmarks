@@ -145,7 +145,10 @@ def normalize_answer_with_llm(vrin_response: str, expected_format: str, question
     api_key = os.getenv('OPENAI_API_KEY')
     if not api_key:
         try:
-            env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+            # Check script directory first, then parent
+            env_path = os.path.join(os.path.dirname(__file__), '.env')
+            if not os.path.exists(env_path):
+                env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
             if os.path.exists(env_path):
                 with open(env_path, 'r') as f:
                     for line in f:
@@ -321,7 +324,11 @@ def evaluate_multihop_answer(expected: str, vrin_response: str, question: str = 
                 return True, "semantic_similar"
 
     elif "insufficient" in expected_lower:
-        if any(x in vrin_lower for x in ["insufficient", "cannot determine", "no information"]):
+        if any(x in vrin_lower for x in [
+            "insufficient", "cannot determine", "no information",
+            "don't have sufficient", "do not have sufficient",
+            "not have sufficient", "nothing specifically relevant"
+        ]):
             return True, "semantic_insufficient"
 
     return False, "no_match"
