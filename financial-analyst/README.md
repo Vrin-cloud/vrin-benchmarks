@@ -6,11 +6,11 @@ A head-to-head evaluation of AI-assisted financial analysis comparing **Claude C
 
 | System | Total Score (out of 1,000) | Average per Question |
 |--------|---------------------------|---------------------|
-| CoWork Standalone | 849 | 84.9 |
-| **CoWork + VRIN MCP** | **925** | **92.5** |
-| **Delta** | **+76** | **+7.6** |
+| CoWork Standalone | 824 | 82.4 |
+| **CoWork + VRIN MCP** | **922** | **92.2** |
+| **Delta** | **+98** | **+9.8** |
 
-VRIN MCP improved performance on **9 out of 10 questions**, with the largest gains on filing-level deep dives (+20 on Q2, +14 on Q3 and Q9).
+VRIN MCP improved performance on **9 out of 10 questions**, with the largest gains on filing-level deep dives (+20 on Q3, +19 on Q2, +13 on Q9).
 
 ## What Was Tested
 
@@ -31,11 +31,11 @@ Per company: 10-K annual filing, 10-Q quarterly filing, 8-K earnings press relea
 
 | Category | Questions |
 |----------|-----------|
-| **Cross-Company Comparison** | Q1: Revenue/margins/FCF comparison, Q2: AI capex as % of revenue |
-| **Deep-Dive Analysis** | Q3: META's new 10-K risk factors, Q4: Amazon cash flow breakdown |
-| **Multi-Hop Reasoning** | Q5: Declining margins + rising R&D, Q6: Most aggressive AI capex bet |
-| **Portfolio & Correlation** | Q7: Portfolio revenue concentration, Q8: Revenue growth guidance rankings |
-| **Anomaly & Inconsistency** | Q9: 8-K vs 10-K inconsistencies, Q10: GAAP vs non-GAAP earnings gap |
+| **Cross-Company Comparison** | Q1: Revenue/margins/FCF comparison (+9), Q2: AI capex trajectories (+19) |
+| **Deep-Dive Analysis** | Q3: META's new 10-K risk factors (+20), Q4: Amazon cash flow breakdown (+9) |
+| **Multi-Hop Reasoning** | Q5: Declining margins + rising R&D (+9), Q6: Most aggressive AI capex bet (-2) |
+| **Portfolio & Correlation** | Q7: Portfolio revenue concentration (+5), Q8: Revenue growth guidance rankings (+6) |
+| **Anomaly & Inconsistency** | Q9: 8-K vs 10-K inconsistencies (+13), Q10: GAAP vs non-GAAP earnings gap (+10) |
 
 Full question text: [`questions.md`](questions.md)
 
@@ -53,33 +53,38 @@ Full scoring breakdown: [`scoring/scoring_summary.md`](scoring/scoring_summary.m
 
 ## Key Findings
 
-### Where VRIN MCP Dominated
+### Three Findings That Matter
 
-- **Q9 (+14): 8-K vs 10-K inconsistency detection** — VRIN discovered that Microsoft's 10-K lists OpenAI as a *competitor* while the 8-K celebrates it as a strategic partner. Also surfaced that Apple executive Eddie Cue testified Safari search volumes declined for the first time in 22 years. These insights are impossible from web search alone.
+- **Multi-Source Reasoning**: When asked how much Meta has committed to AI infrastructure, VRIN pulled three separate disclosure sources from the annual report: $72.2B in capital expenditures, $81.2B in non-cancelable purchase commitments, and $58.1B in lease obligations — $209B in total committed spending. The standalone system found only the headline capex figure, understating Meta's true exposure by roughly two-thirds.
 
-- **Q2 (+20): Forward capex analysis** — VRIN provided 2026 guidance tables with dollar figures, direct management quotes from earnings call transcripts, and META's $81.2B in non-cancelable contractual commitments sourced from 10-K footnotes.
+- **Self-Correction**: VRIN caught and corrected its own earlier mistake. In Q1, it reported that Meta's free cash flow grew 19.5%. Two questions later, while analyzing capital spending trajectories, it re-read the actual filing, realized the figure was wrong, and corrected it to a 16.3% decline ($43.6B). No human prompted this.
 
-- **Q3 (+14): META risk factor deep-dive** — VRIN pulled direct 10-K quotes, calculated $209B in total META infrastructure obligations across 3 filing sources, and identified the useful-life accounting change as an impairment early warning.
+- **Cross-Filing Pattern Detection**: VRIN found that Microsoft's quarterly OpenAI investment swings wildly: a $3.1B loss one quarter, a $7.6B gain the next. These swings reverse the direction of Microsoft's earnings gap each quarter — a pattern only visible when reading across multiple filings.
 
-### Where CoWork Standalone Held
+### Where CoWork Standalone Won
 
-- **Q6 (-3): Forward strategy synthesis** — CoWork's narrative framing ("Infrastructure Maximalists vs Integration Minimalist") and strategic one-word summaries per company were more analytically creative.
+- **Q6 (-2): Forward strategy synthesis** — CoWork's narrative framing ("Infrastructure Maximalists vs Integration Minimalists") and one-word strategic summaries per company were more analytically creative. This was the only question where standalone outscored VRIN.
 
 ### The Pattern
 
-- **VRIN MCP wins on backward-looking filing analysis** (Q2, Q3, Q4, Q5, Q9, Q10) — where document retrieval from knowledge graphs surfaces data that web search cannot match
-- **CoWork standalone holds on forward-looking strategy synthesis** (Q6) — where narrative framing and analytical creativity matter more than data retrieval
-- **VRIN raises the floor**: Lowest VRIN-backed score was 86/100 vs standalone's 72/100
+- **VRIN MCP wins on filing-level analysis** (Q1-Q5, Q7-Q10) — where document retrieval from knowledge graphs surfaces data that web search cannot match
+- **CoWork standalone wins on creative strategy synthesis** (Q6) — where narrative framing and analytical creativity matter more than data retrieval
+- **VRIN raises the floor**: Lowest VRIN-backed score was 89/100 vs standalone's 74/100. It doesn't just improve the best answers — it eliminates the worst ones.
+
+## Full Report
+
+[Download the benchmark report (PDF)](report.pdf) — designed for sharing with financial professionals and influencers.
 
 ## Repository Structure
 
 ```
 financial-analyst/
 ├── README.md                              # This file
+├── report.pdf                             # Full benchmark report (shareable)
 ├── questions.md                           # The 10 benchmark questions
 ├── responses/
 │   ├── cowork-standalone/q01-q10.md       # Baseline responses
-│   └── cowork-vrin-mcp/q01-q10.md         # VRIN-enhanced responses
+│   └── cowork-vrin-mcp/Q1-Q9.md, q10.md  # VRIN-enhanced responses
 └── scoring/
     └── scoring_summary.md                 # Detailed per-question scoring
 ```
